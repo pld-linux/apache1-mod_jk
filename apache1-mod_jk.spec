@@ -3,12 +3,12 @@ Summary:	Apache module that handles communication between Tomcat and Apache 1.3.
 Summary(pl):	Modu³ Apache'a obs³uguj±cy komunikacjê miêdzy Tomcatem a Apachem 1.3.x
 %define		mod_name	jk
 Name:		apache1-mod_%{mod_name}
-Version:	1.2.6
+Version:	1.2.8
 Release:	1
 License:	Apache
 Group:		Networking/Daemons
-Source0:	http://www.apache.org/dist/jakarta/tomcat-connectors/jk/source/jakarta-tomcat-connectors-jk-%{version}-src.tar.gz
-# Source0-md5:	018b91a0ce874cbc3dae7700f452838b
+Source0:	http://www.apache.org/dist/jakarta/tomcat-connectors/jk/source/jk-%{version}/jakarta-tomcat-connectors-%{version}-src.tar.gz
+# Source0-md5:	eb579c47f8dd71e526d7561c919ce06d
 Source1:	%{name}.conf
 Patch0:		jakarta-tomcat-connectors-jk-jkpass.patch
 URL:		http://jakarta.apache.org/builds/jakarta-tomcat-connectors/jk/doc/
@@ -39,7 +39,7 @@ JK jest zamiennikiem starego mod_jserv. Jest ca³kowicie now± wtyczk±
 Tomcat-Apache obs³uguj±c± komunikacjê miêdzy Tomcatem a Apachem.
 
 %prep
-%setup -q -n jakarta-tomcat-connectors-jk-%{version}-src
+%setup -q -n jakarta-tomcat-connectors-%{version}-src
 %patch0 -p1
 
 %build
@@ -92,7 +92,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc jk/native/{README,CHANGES.txt} jk/doc/*
+%doc jk/native/{README,CHANGES.txt} doc/*
 %config(noreplace) %{_apacheconfdir}/mod_jk.conf
 %attr(755,root,root) %{_pkglibdir}/*
 %attr(750,http,http) /var/lock/mod_jk
