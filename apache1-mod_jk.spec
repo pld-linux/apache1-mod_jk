@@ -10,7 +10,7 @@ Group:		Networking/Daemons
 Source0:	http://sunsite.icm.edu.pl/pub/www/apache/dist/jakarta/tomcat-connectors/jk/source/jakarta-tomcat-connectors-jk-%{version}-src.tar.gz
 # Source0-md5:	55727c871286e010222bb0fb91f21d08
 Source1:	%{name}.conf
-Patch0:         jakarta-tomcat-connectors-jk-jkpass.patch
+Patch0:		jakarta-tomcat-connectors-jk-jkpass.patch
 URL:		http://jakarta.apache.org/builds/jakarta-tomcat-connectors/jk/doc/
 BuildRequires:	%{apxs}
 BuildRequires:	libtool
@@ -27,8 +27,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	jakarta-tomcat-connectors-jk
 
 %define		_pkglibdir	%(%{apxs} -q LIBEXECDIR)
-%define         _apacheconfdir  %(%{apxs} -q SYSCONFDIR)
-%define         _apacheconf     %{_apacheconfdir}/apache.conf
+%define		_apacheconfdir	%(%{apxs} -q SYSCONFDIR)
+%define		_apacheconf	%{_apacheconfdir}/apache.conf
 
 %description
 JK is a replacement to the elderly mod_jserv. It was a completely new
