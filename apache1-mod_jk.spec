@@ -10,6 +10,7 @@ Group:		Networking/Daemons
 Source0:	http://sunsite.icm.edu.pl/pub/www/apache/dist/jakarta/tomcat-connectors/jk/source/jakarta-tomcat-connectors-jk-%{version}-src.tar.gz
 # Source0-md5:	55727c871286e010222bb0fb91f21d08
 Source1:	%{name}.conf
+Patch0:         jakarta-tomcat-connectors-jk-jkpass.patch
 URL:		http://jakarta.apache.org/builds/jakarta-tomcat-connectors/jk/doc/
 BuildRequires:	%{apxs}
 BuildRequires:	libtool
@@ -40,6 +41,7 @@ Tomcat-Apache obs³uguj±c± komunikacjê miêdzy Tomcatem a Apachem.
 
 %prep
 %setup -q -n jakarta-tomcat-connectors-jk-%{version}-src
+%patch0 -p1
 
 %build
 cd jk/native
