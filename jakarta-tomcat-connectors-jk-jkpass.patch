@@ -1,0 +1,83 @@
+diff -Nru jakarta-tomcat-connectors-jk-1.2.5-src.orig/jk/native/apache-1.3/mod_jk.c jakarta-tomcat-connectors-jk-1.2.5-src/jk/native/apache-1.3/mod_jk.c
+--- jakarta-tomcat-connectors-jk-1.2.5-src.orig/jk/native/apache-1.3/mod_jk.c	2004-05-14 15:02:21.110892712 +0000
++++ jakarta-tomcat-connectors-jk-1.2.5-src/jk/native/apache-1.3/mod_jk.c	2004-05-14 19:43:05.275190512 +0000
+@@ -175,8 +175,14 @@
+     table *envvars; 
+ 
+     server_rec *s;
++
++    array_header *pass_prefixes;
++    
+ } jk_server_conf_t;
+ 
++typedef struct {
++    char* prefix;
++} pass_prefix;
+ 
+ /*
+  * The "private", or subclass portion of the web server service class for
+@@ -1389,6 +1395,18 @@
+     return NULL;
+ }
+ 
++static const char * jk_set_pass_prefix(cmd_parms * cmd, void * dummy, char * pass) {
++    server_rec * server;
++    jk_server_conf_t * config;
++    
++    server = cmd->server;
++    config = (jk_server_conf_t *) ap_get_module_config(server->module_config, &jk_module);
++    pass_prefix *_prefix = ap_push_array (config->pass_prefixes);
++    _prefix->prefix = (char *) ap_palloc(cmd->pool, strlen(pass) + 1);
++    strcpy(_prefix->prefix, pass);
++    return NULL;
++}
++
+ /*
+  * JkEnvVar Directive Handling
+  *
+@@ -1509,6 +1527,9 @@
+     {"JkEnvVar", jk_add_env_var, NULL, RSRC_CONF, TAKE2,
+      "Adds a name of environment variable that should be sent to servlet-engine"},     
+ 
++    {"JkPass", jk_set_pass_prefix, NULL, RSRC_CONF, TAKE1,
++     "Set the prefix for URIs that shouldn't be procceded to a servlet-engine worker (multiple)" },
++
+     {NULL}
+ };
+ 
+@@ -1529,6 +1550,25 @@
+         return HTTP_INTERNAL_SERVER_ERROR;
+     }
+ 
++    server_rec * s;
++    jk_server_conf_t * c;
++    s = r->server;
++    c = (jk_server_conf_t *) ap_get_module_config(s->module_config, &jk_module);
++    pass_prefix *list;
++    pass_prefix *item;
++    int i;
++    list = (pass_prefix *) c->pass_prefixes->elts;
++    for (i = 0; i < c->pass_prefixes->nelts; ++i) {
++        item = &list[i];
++        if (item->prefix) {
++    	    char *pass = strstr(r->uri, item->prefix);
++	    if (pass && pass == r->uri) {
++    		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, s, "Skipping URI: %s", r->uri);
++		return DECLINED;
++	    }
++	}
++    }
++
+     /* Set up r->read_chunked flags for chunked encoding, if present */
+     if(rc = ap_setup_client_block(r, REQUEST_CHUNKED_DECHUNK)) {
+ 	return rc;
+@@ -1685,6 +1725,9 @@
+ 
+     c->s = s;
+ 
++    c->pass_prefixes = ap_make_array(p, 4, sizeof(pass_prefix));
++    ap_log_error( APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, s, "AMG.net hack configured");
++    
+     return c;
+ }
+ 
