@@ -4,11 +4,12 @@ Summary(pl):	Modu³ Apache'a obs³uguj±cy komunikacjê miêdzy Tomcatem a Apachem 1.
 %define		mod_name	jk
 Name:		apache1-mod_%{mod_name}
 Version:	1.2.5
-Release:	0.1
+Release:	0.2
 License:	Apache
 Group:		Networking/Daemons
-Source0:	http://sunsite.icm.edu.pl/pub/www/apache/dist/jakarta/tomcat-connectors/jk/source/jakarta-tomcat-connectors-jk-%{version}-src.tar.gz
-# Source0-md5:	55727c871286e010222bb0fb91f21d08
+#Source0:	http://sunsite.icm.edu.pl/pub/www/apache/dist/jakarta/tomcat-connectors/jk/source/jakarta-tomcat-connectors-jk-%{version}-src.tar.gz
+Source0:	jakarta-tomcat-connectors-jk-1.2.5-src-20040516.tar.bz2
+# Source0-md5:	78d615f54e49e96ab4a5e9e442b88f9b
 Source1:	%{name}.conf
 Patch0:		jakarta-tomcat-connectors-jk-jkpass.patch
 URL:		http://jakarta.apache.org/builds/jakarta-tomcat-connectors/jk/doc/
@@ -93,7 +94,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc jk/native/{README,CHANGES.txt} jk/docs/*
+%doc jk/native/{README,CHANGES.txt} jk/doc/*
 %config(noreplace) %{_apacheconfdir}/mod_jk.conf
 %attr(755,root,root) %{_pkglibdir}/*
 %attr(750,http,http) /var/lock/mod_jk
