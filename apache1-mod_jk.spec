@@ -1,10 +1,10 @@
+%define		mod_name	jk
 %define		apxs		/usr/sbin/apxs1
 Summary:	Apache module that handles communication between Tomcat and Apache 1.3.x
 Summary(pl):	Modu³ Apache'a obs³uguj±cy komunikacjê miêdzy Tomcatem a Apachem 1.3.x
-%define		mod_name	jk
 Name:		apache1-mod_%{mod_name}
 Version:	1.2.8
-Release:	1
+Release:	1.1
 License:	Apache
 Group:		Networking/Daemons
 Source0:	http://www.apache.org/dist/jakarta/tomcat-connectors/jk/source/jk-%{version}/jakarta-tomcat-connectors-%{version}-src.tar.gz
@@ -13,11 +13,12 @@ Source1:	%{name}.conf
 Patch0:		jakarta-tomcat-connectors-jk-jkpass.patch
 URL:		http://jakarta.apache.org/builds/jakarta-tomcat-connectors/jk/doc/
 BuildRequires:	%{apxs}
+BuildRequires:	apache1-devel >= 1.3.33-2
 BuildRequires:	libtool
 BuildRequires:	automake
 BuildRequires:	autoconf
 BuildRequires:	perl-base
-PreReq:		apache1(EAPI) >= 1.3.31
+Requires:	apache1 >= 1.3.33-2
 Requires(post,preun):	%{apxs}
 Requires(post,preun):	%{__perl}
 Requires(post,preun):	grep
@@ -25,9 +26,8 @@ Requires(preun):	fileutils
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	jakarta-tomcat-connectors-jk
 
-%define		_pkglibdir	%(%{apxs} -q LIBEXECDIR)
-%define		_apacheconfdir	%(%{apxs} -q SYSCONFDIR)
-%define		_apacheconf	%{_apacheconfdir}/apache.conf
+%define		_pkglibdir	%(%{apxs} -q LIBEXECDIR 2>/dev/null)
+%define		_sysconfdir	%(%{apxs} -q SYSCONFDIR 2>/dev/null)
 
 %description
 JK is a replacement to the elderly mod_jserv. It was a completely new
@@ -55,36 +55,24 @@ cd jk/native
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_pkglibdir},%{_apacheconf},/var/lock/mod_jk}
+install -d $RPM_BUILD_ROOT{%{_pkglibdir},%{_sysconfdir}/conf.d,/var/lock/mod_jk}
 
 cd jk/native
 
-%{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT \
-	APXS="%{apxs} -S LIBEXECDIR=$RPM_BUILD_ROOT$(%{apxs} -q LIBEXECDIR)" \
-	libexecdir=$RPM_BUILD_ROOT%{_pkglibdir}
+install apache-1.3/mod_%{mod_name}.so.0.0.0 $RPM_BUILD_ROOT%{_pkglibdir}/mod_%{mod_name}.so
 
-install %{SOURCE1} $RPM_BUILD_ROOT%{_apacheconfdir}/mod_jk.conf
+install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/conf.d/90_mod_%{mod_name}.conf
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post
-%{apxs} -e -a -n %{mod_name} %{_pkglibdir}/mod_%{mod_name}.so 1>&2
-if [ -f %{_apacheconf} ] && ! grep -q "^Include.*mod_jk.conf" %{_apacheconf}; then
-	echo "Include /etc/apache/mod_jk.conf" >> %{_apacheconf}
-fi
 if [ -f /var/lock/subsys/apache ]; then
 	/etc/rc.d/init.d/apache restart 1>&2
 fi
 
 %preun
 if [ "$1" = "0" ]; then
-	%{apxs} -e -A -n %{mod_name} %{_pkglibdir}/mod_%{mod_name}.so 1>&2
-	umask 027
-	grep -v "^Include.*mod_jk.conf" %{_apacheconf} > \
-		%{_apacheconf}.tmp
-	mv -f %{_apacheconf}.tmp %{_apacheconf}
 	if [ -f /var/lock/subsys/apache ]; then
 		/etc/rc.d/init.d/apache restart 1>&2
 	fi
@@ -93,6 +81,6 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc jk/native/{README,CHANGES.txt} doc/*
-%config(noreplace) %{_apacheconfdir}/mod_jk.conf
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/conf.d/*_mod_%{mod_name}.conf
 %attr(755,root,root) %{_pkglibdir}/*
 %attr(750,http,http) /var/lock/mod_jk
