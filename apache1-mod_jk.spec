@@ -4,7 +4,7 @@ Summary:	Apache module that handles communication between Tomcat and Apache 1.3.
 Summary(pl):	Modu³ Apache'a obs³uguj±cy komunikacjê miêdzy Tomcatem a Apachem 1.3.x
 Name:		apache1-mod_%{mod_name}
 Version:	1.2.8
-Release:	1.1
+Release:	1.2
 License:	Apache
 Group:		Networking/Daemons
 Source0:	http://www.apache.org/dist/jakarta/tomcat-connectors/jk/source/jk-%{version}/jakarta-tomcat-connectors-%{version}-src.tar.gz
@@ -19,10 +19,6 @@ BuildRequires:	automake
 BuildRequires:	autoconf
 BuildRequires:	perl-base
 Requires:	apache1 >= 1.3.33-2
-Requires(post,preun):	%{apxs}
-Requires(post,preun):	%{__perl}
-Requires(post,preun):	grep
-Requires(preun):	fileutils
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	jakarta-tomcat-connectors-jk
 
@@ -71,7 +67,7 @@ if [ -f /var/lock/subsys/apache ]; then
 	/etc/rc.d/init.d/apache restart 1>&2
 fi
 
-%preun
+%postun
 if [ "$1" = "0" ]; then
 	if [ -f /var/lock/subsys/apache ]; then
 		/etc/rc.d/init.d/apache restart 1>&2
