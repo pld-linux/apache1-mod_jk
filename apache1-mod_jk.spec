@@ -3,13 +3,12 @@ Summary:	Apache module that handles communication between Tomcat and Apache 1.3.
 Summary(pl):	Modu³ Apache'a obs³uguj±cy komunikacjê miêdzy Tomcatem a Apachem 1.3.x
 %define		mod_name	jk
 Name:		apache1-mod_%{mod_name}
-Version:	1.2.5
-Release:	0.2
+Version:	1.2.6
+Release:	1
 License:	Apache
 Group:		Networking/Daemons
-#Source0:	http://sunsite.icm.edu.pl/pub/www/apache/dist/jakarta/tomcat-connectors/jk/source/jakarta-tomcat-connectors-jk-%{version}-src.tar.gz
-Source0:	jakarta-tomcat-connectors-jk-1.2.5-src-20040516.tar.bz2
-# Source0-md5:	78d615f54e49e96ab4a5e9e442b88f9b
+Source0:	http://www.apache.org/dist/jakarta/tomcat-connectors/jk/source/jakarta-tomcat-connectors-jk-%{version}-src.tar.gz
+# Source0-md5:	018b91a0ce874cbc3dae7700f452838b
 Source1:	%{name}.conf
 Patch0:		jakarta-tomcat-connectors-jk-jkpass.patch
 URL:		http://jakarta.apache.org/builds/jakarta-tomcat-connectors/jk/doc/
@@ -18,8 +17,7 @@ BuildRequires:	libtool
 BuildRequires:	automake
 BuildRequires:	autoconf
 BuildRequires:	perl-base
-PreReq:		apache(EAPI) < 2.0.0
-PreReq:		apache(EAPI) >= 1.3.9
+PreReq:		apache1(EAPI) >= 1.3.31
 Requires(post,preun):	%{apxs}
 Requires(post,preun):	%{__perl}
 Requires(post,preun):	grep
