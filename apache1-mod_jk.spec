@@ -14,9 +14,9 @@ Patch0:		jakarta-tomcat-connectors-jk-jkpass.patch
 URL:		http://jakarta.apache.org/builds/jakarta-tomcat-connectors/jk/doc/
 BuildRequires:	%{apxs}
 BuildRequires:	apache1-devel >= 1.3.33-2
-BuildRequires:	libtool
-BuildRequires:	automake
 BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool
 BuildRequires:	perl-base
 Requires:	apache1 >= 1.3.33-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -77,6 +77,6 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc jk/native/{README,CHANGES.txt} doc/*
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/conf.d/*_mod_%{mod_name}.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/conf.d/*_mod_%{mod_name}.conf
 %attr(755,root,root) %{_pkglibdir}/*
 %attr(750,http,http) /var/lock/mod_jk
