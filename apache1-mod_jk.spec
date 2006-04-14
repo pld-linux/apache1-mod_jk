@@ -18,9 +18,10 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	libtool
 BuildRequires:	perl-base
+BuildRequires:	rpmbuild(macros) >= 1.268
 Requires:	apache1 >= 1.3.33-2
-BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	jakarta-tomcat-connectors-jk
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_pkglibdir	%(%{apxs} -q LIBEXECDIR 2>/dev/null)
 %define		_sysconfdir	%(%{apxs} -q SYSCONFDIR 2>/dev/null)
@@ -63,15 +64,11 @@ install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/conf.d/90_mod_%{mod_name}.conf
 rm -rf $RPM_BUILD_ROOT
 
 %post
-if [ -f /var/lock/subsys/apache ]; then
-	/etc/rc.d/init.d/apache restart 1>&2
-fi
+%service -q apache restart
 
 %postun
 if [ "$1" = "0" ]; then
-	if [ -f /var/lock/subsys/apache ]; then
-		/etc/rc.d/init.d/apache restart 1>&2
-	fi
+	%service -q apache restart
 fi
 
 %files
