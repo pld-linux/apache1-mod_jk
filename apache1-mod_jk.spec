@@ -18,7 +18,7 @@ BuildRequires:	automake
 BuildRequires:	libtool
 BuildRequires:	perl-base
 BuildRequires:	rpmbuild(macros) >= 1.268
-Requires:	apache1 >= 1.3.33-2
+Requires:	apache1-mod_dir >= 1.3.33-2
 Obsoletes:	jakarta-tomcat-connectors-jk
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
