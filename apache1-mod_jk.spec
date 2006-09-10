@@ -3,14 +3,13 @@
 Summary:	Apache module that handles communication between Tomcat and Apache 1.3.x
 Summary(pl):	Modu³ Apache'a obs³uguj±cy komunikacjê miêdzy Tomcatem a Apachem 1.3.x
 Name:		apache1-mod_%{mod_name}
-Version:	1.2.8
-Release:	1.2
+Version:	1.2.18
+Release:	1
 License:	Apache
 Group:		Networking/Daemons
-Source0:	http://www.apache.org/dist/jakarta/tomcat-connectors/jk/source/jk-%{version}/jakarta-tomcat-connectors-%{version}-src.tar.gz
-# Source0-md5:	eb579c47f8dd71e526d7561c919ce06d
+Source0:	http://www.apache.org/dist/tomcat/tomcat-connectors/jk/source/jk-%{version}/tomcat-connectors-%{version}-src.tar.gz
+# Source0-md5:	58e1b9406e0cfe11bd4bc297ba146b4f
 Source1:	%{name}.conf
-Patch0:		jakarta-tomcat-connectors-jk-jkpass.patch
 URL:		http://jakarta.apache.org/builds/jakarta-tomcat-connectors/jk/doc/
 BuildRequires:	%{apxs}
 BuildRequires:	apache1-devel >= 1.3.33-2
@@ -36,11 +35,10 @@ JK jest zamiennikiem starego mod_jserv. Jest ca³kowicie now± wtyczk±
 Tomcat-Apache obs³uguj±c± komunikacjê miêdzy Tomcatem a Apachem.
 
 %prep
-%setup -q -n jakarta-tomcat-connectors-%{version}-src
-%patch0 -p1
+%setup -q -n tomcat-connectors-%{version}-src
 
 %build
-cd jk/native
+cd native
 
 ./buildconf.sh
 
@@ -54,7 +52,7 @@ cd jk/native
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_pkglibdir},%{_sysconfdir}/conf.d,/var/lock/mod_jk}
 
-cd jk/native
+cd native
 
 install apache-1.3/mod_%{mod_name}.so.0.0.0 $RPM_BUILD_ROOT%{_pkglibdir}/mod_%{mod_name}.so
 
@@ -73,7 +71,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc jk/native/{README,CHANGES.txt} doc/*
+%doc native/{CHANGES,README} docs/*
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/conf.d/*_mod_%{mod_name}.conf
 %attr(755,root,root) %{_pkglibdir}/*
 %attr(750,http,http) /var/lock/mod_jk
