@@ -1,7 +1,7 @@
 %define		mod_name	jk
 %define		apxs		/usr/sbin/apxs1
 Summary:	Apache module that handles communication between Tomcat and Apache 1.3.x
-Summary(pl.UTF-8):   Moduł Apache'a obsługujący komunikację między Tomcatem a Apachem 1.3.x
+Summary(pl.UTF-8):	Moduł Apache'a obsługujący komunikację między Tomcatem a Apachem 1.3.x
 Name:		apache1-mod_%{mod_name}
 Version:	1.2.18
 Release:	1
