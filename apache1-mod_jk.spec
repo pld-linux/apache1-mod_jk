@@ -11,7 +11,7 @@ Source0:	http://www.apache.org/dist/tomcat/tomcat-connectors/jk/source/tomcat-co
 # Source0-md5:	4302ff93b5357772444eeed9f843a81e
 Source1:	%{name}.conf
 URL:		http://jakarta.apache.org/builds/jakarta-tomcat-connectors/jk/doc/
-BuildRequires:	%{apxs}
+BuildRequires:	apache1-apxs
 BuildRequires:	apache1-devel >= 1.3.33-2
 BuildRequires:	autoconf
 BuildRequires:	automake
