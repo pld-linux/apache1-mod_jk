@@ -5,7 +5,7 @@ Summary(pl.UTF-8):	Moduł Apache'a obsługujący komunikację między Tomcatem a
 Name:		apache1-mod_%{mod_name}
 Version:	1.2.25
 Release:	1
-License:	Apache
+License:	Apache License 2.0
 Group:		Networking/Daemons
 Source0:	http://www.apache.org/dist/tomcat/tomcat-connectors/jk/source/tomcat-connectors-%{version}-src.tar.gz
 # Source0-md5:	4f614130c85f86d8d3359a03230db8a3
@@ -14,9 +14,10 @@ URL:		http://jakarta.apache.org/builds/jakarta-tomcat-connectors/jk/doc/
 BuildRequires:	apache1-devel >= 1.3.39
 BuildRequires:	autoconf
 BuildRequires:	automake
+BuildRequires:	jpackage-utils
 BuildRequires:	libtool
 BuildRequires:	perl-base
-BuildRequires:	rpmbuild(macros) >= 1.268
+BuildRequires:	rpmbuild(macros) >= 1.300
 Requires:	apache1-mod_dir >= 1.3.33-2
 Obsoletes:	jakarta-tomcat-connectors-jk
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -38,29 +39,34 @@ Tomcat-Apache obsługującą komunikację między Tomcatem a Apachem.
 
 %build
 cd native
-
-./buildconf.sh
-
+%{__libtoolize}
+%{__aclocal}
+%{__autoheader}
+%{__automake}
+%{__autoconf}
 %configure \
 	--enable-EAPI \
-	--with-apxs=%{apxs}
-
+	--with-apxs=%{apxs} \
+	--with-java-home="%{java_home}"
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_pkglibdir},%{_sysconfdir}/conf.d,/var/lock/mod_jk}
+install -d $RPM_BUILD_ROOT{%{_pkglibdir},%{_sysconfdir}/conf.d,/var/{lock/mod_jk,log/apache}}
 
-cd native
-
-install apache-1.3/mod_%{mod_name}.so.0.0.0 $RPM_BUILD_ROOT%{_pkglibdir}/mod_%{mod_name}.so
-
+install native/apache-1.3/mod_%{mod_name}.so.0.0.0 $RPM_BUILD_ROOT%{_pkglibdir}/mod_%{mod_name}.so
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/conf.d/90_mod_%{mod_name}.conf
+touch $RPM_BUILD_ROOT/var/log/apache/mod_jk.log
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post
+if [ ! -f /var/log/apache/mod_jk.log ]; then
+	umask 027
+	touch /var/log/apache/mod_jk.log
+	chown root:logs /var/log/apache/mod_jk.log
+fi
 %service -q apache restart
 
 %postun
@@ -73,4 +79,5 @@ fi
 %doc native/{CHANGES,README} docs/*
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/conf.d/*_mod_%{mod_name}.conf
 %attr(755,root,root) %{_pkglibdir}/*
-%attr(750,http,http) /var/lock/mod_jk
+%attr(770,root,http) /var/lock/mod_jk
+%attr(640,root,logs) %ghost /var/log/apache/mod_jk.log
