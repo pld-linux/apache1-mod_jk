@@ -4,8 +4,8 @@ Summary:	Apache module that handles communication between Tomcat and Apache 1.3.
 Summary(pl.UTF-8):	Moduł Apache'a obsługujący komunikację między Tomcatem a Apachem 1.3.x
 Name:		apache1-mod_%{mod_name}
 Version:	1.2.25
-Release:	1
-License:	Apache License 2.0
+Release:	2
+License:	Apache v2.0
 Group:		Networking/Daemons
 Source0:	http://www.apache.org/dist/tomcat/tomcat-connectors/jk/source/tomcat-connectors-%{version}-src.tar.gz
 # Source0-md5:	4f614130c85f86d8d3359a03230db8a3
@@ -18,6 +18,7 @@ BuildRequires:	jpackage-utils
 BuildRequires:	libtool
 BuildRequires:	perl-base
 BuildRequires:	rpmbuild(macros) >= 1.300
+Requires:	apache1(EAPI)
 Requires:	apache1-mod_dir >= 1.3.33-2
 Obsoletes:	jakarta-tomcat-connectors-jk
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
